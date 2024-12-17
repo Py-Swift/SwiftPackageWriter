@@ -21,7 +21,7 @@ struct SwiftPackageWriter: AsyncParsableCommand {
     
 }
 
-extension Path: @retroactive ExpressibleByArgument {
+extension Path: ExpressibleByArgument {
     public init?(argument: String) {
         self = .init(argument)
     }
