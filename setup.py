@@ -28,6 +28,7 @@ class BuildSwiftPackage(build_ext):
         
         # copy to venv/bin
         bin = join(sys.prefix, "bin")
+        print("destination bin:", bin)
         if exists(join(bin, "SwiftPackageWriter")):
             os.remove(join(bin, "SwiftPackageWriter"))
         shutil.copy(
