@@ -12,7 +12,8 @@ from pathlib import Path
 
 class SPWExtension(Extension):
     def __init__(self):
-        super().__init__("", [os.fspath(Path("").resolve())])
+        #super().__init__("", [os.fspath(Path("").resolve())])
+        super().__init__("spw", ["./"])
 
 class BuildSwiftPackage(build_ext):
     
