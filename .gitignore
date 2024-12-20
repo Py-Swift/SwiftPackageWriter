@@ -63,3 +63,8 @@ fastlane/test_output
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 Package.resolved
 .vscode/launch.json
+.DS_Store
+/build
+/src/swiftpackagewriter.egg-info
+uv.lock
+.vscode/tasks.json

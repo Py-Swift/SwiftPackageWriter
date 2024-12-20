@@ -1,2 +1,20 @@
+[project]
+name = "swiftpackagewriter"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "PythonSwiftLink", email = "pythonswiftlink@gmail.com" }
+]
+requires-python = ">=3.11.6"
+dependencies = []
+
+[project.scripts]
+swiftpackagewriter = "swiftpackagewriter:main"
+
 [build-system]
-requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.0"]
+requires = [
+    "setuptools>=61",
+    "sh"
+]
+build-backend = "setuptools.build_meta"
