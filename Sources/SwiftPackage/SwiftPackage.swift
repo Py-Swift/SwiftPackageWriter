@@ -68,9 +68,9 @@ public extension SwiftPackage {
             case .extact:
                 ".package(url: \(literal: url), from: \(literal: version))"
             case .upToNextMinor:
-                ".package(url: \(literal: url), .upToNextMinor(\(literal: version)))"
+                ".package(url: \(literal: url), .upToNextMinor(from: \(literal: version)))"
             case .upToNextMajor:
-                ".package(url: \(literal: url), .upToNextMajor(\(literal: version)))"
+                ".package(url: \(literal: url), .upToNextMajor(from: \(literal: version)))"
             }
         }
         
