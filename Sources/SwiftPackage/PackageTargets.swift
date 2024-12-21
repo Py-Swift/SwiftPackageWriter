@@ -32,6 +32,7 @@ public struct PackageTarget: PackageTargetProtocol {
     let dependencies: [any TargetDependency]
     let linker_settings: [LinkedSetting]
     let resources: [Resource]
+    let plugins: [Plugin]
     
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -39,6 +40,7 @@ public struct PackageTarget: PackageTargetProtocol {
         dependencies = try c.decode(forKey: .dependencies)
         linker_settings = try c.decode(forKey: .linker_settings)
         resources = try c.decode(forKey: .resources)
+        plugins = try c.decode(forKey: .plugins)
     }
     
 
@@ -48,6 +50,7 @@ public struct PackageTarget: PackageTargetProtocol {
         case dependencies
         case linker_settings
         case resources
+        case plugins
     }
     
  
@@ -104,6 +107,16 @@ public extension PackageTarget {
         }
     }
     
+    struct Plugin: Decodable {
+        let name: String
+        let package: String
+        
+        public var arrayElement: ArrayElementSyntax {
+            let expr: ExprSyntax = ".plugin(name: \(literal: name), package: \(literal: package))"
+            return .init(expression: expr)
+        }
+    }
+    
     var arrayElement: ArrayElementSyntax {
         let deps: ArrayElementListSyntax = .init {
             for dependency in self.dependencies {
@@ -120,12 +133,18 @@ public extension PackageTarget {
                 resource.arrayElement.with(\.leadingTrivia, .newline + .tabs(2))
             }
         }
+        let plugs: ArrayElementListSyntax = .init {
+            for resource in self.plugins {
+                resource.arrayElement.with(\.leadingTrivia, .newline + .tabs(2))
+            }
+        }
         let expr: ExprSyntax = """
         .target(
             name: \(literal: name),
             dependencies: [\(deps)\n\t],
             resources: [\(res)\n\t],
-            linkerSettings: [\(linkers)\n\t]
+            linkerSettings: [\(linkers)\n\t],
+            plugins: [\(plugs)]
         )
         """
         return .init(expression: expr)
