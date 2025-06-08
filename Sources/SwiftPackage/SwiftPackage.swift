@@ -14,10 +14,12 @@ public class SwiftPackage: Decodable {
     public var targets: [any PackageTargetProtocol]
     public var dependencies: [Dependency]
     public var version: String
+    public var macOS: Bool
     
     public required init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         name = try c.decode(String.self, forKey: .name)
+        macOS = try c.decodeIfPresent(Bool.self, forKey: .macos) ?? false
         products = try c.decode([Product].self, forKey: .products)
         dependencies = try c.decode([Dependency].self, forKey: .dependencies)
         targets = try! c.decode(forKey: .targets)
@@ -30,6 +32,7 @@ public class SwiftPackage: Decodable {
 extension SwiftPackage {
     enum CodingKeys: CodingKey {
         case name
+        case macos
         case products
         case targets
         case dependencies
@@ -85,7 +88,7 @@ public extension SwiftPackage {
 
 extension SwiftPackage: CustomStringConvertible {
     
-    var macOS: Bool { false }
+    
     
     public var source: SourceFileSyntax {
         let deps: ArrayElementListSyntax = .init {
