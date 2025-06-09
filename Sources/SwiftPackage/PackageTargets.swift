@@ -60,12 +60,44 @@ public extension PackageTarget {
     struct Dependency: TargetDependency {
         let name: String
         let package: String
+        let type: DepType
+        let condition: [String:String]?
+        
+        var condition_arg: String {
+            if let condition {
+                for (k,v) in condition {
+                    switch k {
+                    case "platform":
+                        switch v {
+                        case "ios":
+                            return ", condition: .when(platforms: [.iOS])"
+                        case "macos":
+                            return ", condition: .when(platforms: [.macOS])"
+                        default: break
+                        }
+                    default: break
+                    }
+                }
+            }
+            return ""
+        }
         
         public var arrayElement: ArrayElementSyntax {
-            let expr: ExprSyntax = """
-            .product(name: \(literal: name), package: \(literal: package))
-            """
+            let expr: ExprSyntax = switch type {
+            case .string:
+                "\(literal: name)"
+            case .target:
+                ".target(name: \(literal: name)\(raw: condition_arg))"
+            case .product:
+                ".product(name: \(literal: name), package: \(literal: package)\(raw: condition_arg))"
+            }
             return .init(expression: expr)
+        }
+        
+        enum DepType: String, Decodable {
+            case string
+            case target
+            case product
         }
     }
     
@@ -76,13 +108,33 @@ public extension PackageTarget {
         }
         let kind: Kind
         let name: String
+        let condition: [String:String]?
+        
+        var condition_arg: String {
+            if let condition {
+                for (k,v) in condition {
+                    switch k {
+                    case "platform":
+                        switch v {
+                        case "ios":
+                            return ", .when(platforms: [.iOS])"
+                        case "macos":
+                            return ", .when(platforms: [.macOS])"
+                        default: break
+                        }
+                    default: break
+                    }
+                }
+            }
+            return ""
+        }
         
         public var arrayElement: ArrayElementSyntax {
             let expr: ExprSyntax = switch kind {
             case .framework:
-                ".linkedFramework(\(literal: name))"
+                ".linkedFramework(\(literal: name)\(raw: condition_arg))"
             case .library:
-                ".linkedLibrary(\(literal: name))"
+                ".linkedLibrary(\(literal: name)\(raw: condition_arg))"
             }
             return .init(expression: expr)
         }
