@@ -84,11 +84,11 @@ public extension PackageTarget {
         
         public var arrayElement: ArrayElementSyntax {
             let expr: ExprSyntax = switch type {
-            case .string, .none:
+            case .string:
                 "\(literal: name)"
             case .target:
                 ".target(name: \(literal: name)\(raw: condition_arg))"
-            case .product:
+            case .product, .none:
                 ".product(name: \(literal: name), package: \(literal: package)\(raw: condition_arg))"
             }
             return .init(expression: expr)
