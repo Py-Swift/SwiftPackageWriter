@@ -60,7 +60,7 @@ public extension PackageTarget {
     struct Dependency: TargetDependency {
         let name: String
         let package: String
-        let type: DepType
+        let type: DepType?
         let condition: [String:String]?
         
         var condition_arg: String {
@@ -84,7 +84,7 @@ public extension PackageTarget {
         
         public var arrayElement: ArrayElementSyntax {
             let expr: ExprSyntax = switch type {
-            case .string:
+            case .string, .none:
                 "\(literal: name)"
             case .target:
                 ".target(name: \(literal: name)\(raw: condition_arg))"
