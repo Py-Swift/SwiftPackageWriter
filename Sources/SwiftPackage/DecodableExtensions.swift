@@ -5,6 +5,11 @@ enum PackageTargetType: String, Decodable {
     case binary
 }
 
+enum TargetDependencyType: String, Decodable {
+    case string
+    case dependency
+}
+
 enum PackageTargetData: CodingKey {
     case type
     case data
@@ -33,8 +38,8 @@ extension UnkeyedDecodingContainer {
     
     mutating func decode() throws -> any TargetDependency {
         let nested = try nestedContainer(keyedBy: PackageTargetData.self)
-        switch try nested.decode(String.self, forKey: .type) {
-        case "string":
+        switch try nested.decode(TargetDependencyType.self, forKey: .type) {
+        case .string:
             let name = try nested.decode(String.self, forKey: .data)
             if let condition = try nested.decode([String : String]?.self, forKey: .condition) {
                 return PackageTarget.Dependency(
@@ -45,7 +50,7 @@ extension UnkeyedDecodingContainer {
                 )
             }
             return name
-        default:
+        case .dependency:
             return try nested.decode(PackageTarget.Dependency.self, forKey: .data)
         }
     }
